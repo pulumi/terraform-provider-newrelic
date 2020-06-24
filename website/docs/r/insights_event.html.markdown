@@ -8,7 +8,7 @@ description: |-
 
 # Resource: newrelic\_insights\_event
 
-Use this resource to create one or more Insights events during a terraform run.
+Use this resource to create one or more Insights events.
 
 ## Example Usage
 

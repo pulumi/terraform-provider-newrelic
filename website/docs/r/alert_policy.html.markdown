@@ -12,31 +12,17 @@ Use this resource to create and manage New Relic alert policies.
 
 ## Example Usage
 
+### Basic Usage
+
 ```hcl
 resource "newrelic_alert_policy" "foo" {
   name = "example"
   incident_preference = "PER_POLICY" # PER_POLICY is default
 }
 ```
-See additional [examples](#additional-examples).
 
-## Argument Reference
+#### Provision multiple notification channels and add those channels to a policy
 
-The following arguments are supported:
-
-  * `name` - (Required) The name of the policy.
-  * `incident_preference` - (Optional) The rollup strategy for the policy.  Options include: `PER_POLICY`, `PER_CONDITION`, or `PER_CONDITION_AND_TARGET`.  The default is `PER_POLICY`.
-  * `channel_ids` - (Optional) An array of channel IDs (integers) to assign to the policy. Adding or removing channel IDs from this array will result in a new alert policy resource being created and the old one being destroyed. Also note that channel IDs _cannot_ be imported via `terraform import` (see [Import](#import) for info).
-
-## Attributes Reference
-
-In addition to all arguments above, the following attributes are exported:
-
-  * `id` - The ID of the policy.
-
-## Additional Examples
-
-##### Provision multiple notification channels and add those channels to a policy
 ```hcl
 # Provision a Slack notification channel.
 resource "newrelic_alert_channel" "slack_channel" {
@@ -72,9 +58,8 @@ resource "newrelic_alert_policy" "policy_with_channels" {
   ]
 }
 ```
-<br>
 
-##### Reference existing notification channels and add those channel to a policy
+### Reference existing notification channels and add those channel to a policy
 ```hcl
 # Reference an existing Slack notification channel.
 data "newrelic_alert_channel" "slack_channel" {
@@ -98,6 +83,20 @@ resource "newrelic_alert_policy" "policy_with_channels" {
   ]
 }
 ```
+
+## Argument Reference
+
+The following arguments are supported:
+
+  * `name` - (Required) The name of the policy.
+  * `incident_preference` - (Optional) The rollup strategy for the policy.  Options include: `PER_POLICY`, `PER_CONDITION`, or `PER_CONDITION_AND_TARGET`.  The default is `PER_POLICY`.
+  * `channel_ids` - (Optional) An array of channel IDs (integers) to assign to the policy. Adding or removing channel IDs from this array will result in a new alert policy resource being created and the old one being destroyed.
+
+## Attributes Reference
+
+In addition to all arguments above, the following attributes are exported:
+
+  * `id` - The ID of the policy.
 
 ## Import
 
