@@ -15,25 +15,48 @@ digital transformation.
 
 Use the navigation to the left to read about the available resources.
 
+## Quick Links
+
+- [**Configure the Provider**](guides/provider_configuration.html)
+- [**Getting Started Guide**](guides/getting_started.html)
+- [**Migration Guide: Upgrading to v2.x**](guides/migration_guide_v2.html)
+
+## Argument Reference
+
+The following arguments are supported.
+
+|                        |          |                                                                                                                                                                             |
+| ---------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `account_id`           | Required | Your New Relic account ID. The `NEW_RELIC_ACCOUNT_ID` environment variable can also be used.                                                                                |
+| `api_key`              | Required | Your New Relic Personal API key (starts with `NRAK`). The `NEW_RELIC_API_KEY` environment variable can also be used.                                                        |
+| `admin_api_key`        | Required | Your New Relic Admin API key (starts with `NRAA`). The `NEW_RELIC_ADMIN_API_KEY` environment variable can also be used.                                                     |
+| `region`               | Required | The region for the data center for which your New Relic account is configured. The `NEW_RELIC_REGION` environment variable can also be used. Valid values are `US` or `EU`. |
+| `insecure_skip_verify` | Optional | Trust self-signed SSL certificates. If omitted, the `NEW_RELIC_API_SKIP_VERIFY` environment variable is used.                                                               |
+| `insights_insert_url`  | Optional | Your Insights insert key used when inserting Insights events via the `newrelic_insights_event` resource. Can also use `NEW_RELIC_INSIGHTS_INSERT_KEY` environment variable. |
+| `cacert_file`          | Optional | A path to a PEM-encoded certificate authority used to verify the remote agent's certificate. The `NEW_RELIC_API_CACERT` environment variable can also be used.              |
+
+
 ## Example Usage
 
 ```hcl
 # Configure the New Relic provider
 provider "newrelic" {
-  api_key = var.newrelic_api_key
-  region = "US" # US or EU (US is default)
+  account_id = <Your Account ID>
+  api_key = <Your Personal API Key>    # starts with 'NRAK'
+  admin_api_key = <Your Admin API Key> # starts with 'NRAA'
+  region = "US"                        # Valid regions are US and EU
 }
 
 # Read an APM application resource
 data "newrelic_entity" "foo" {
-  name = "foo"
+  name = "Your App Name"
   domain = "APM"
   type = "APPLICATION"
 }
 
 # Create an alert policy
 resource "newrelic_alert_policy" "alert" {
-  name = "Alert"
+  name = "Your Concise Alert Name"
 }
 
 # Add a condition
@@ -42,7 +65,7 @@ resource "newrelic_alert_condition" "foo" {
 
   name        = "foo"
   type        = "apm_app_metric"
-  entities    = [data.newrelic_application.foo.application_id]
+  entities    = [data.newrelic_entity.foo.application_id]
   metric      = "apdex"
   runbook_url = "https://docs.example.com/my-runbook"
 
@@ -61,7 +84,7 @@ resource "newrelic_alert_channel" "email" {
   type = "email"
 
   config {
-    recipients              = "paul@example.com"
+    recipients              = "username@example.com"
     include_json_attachment = "1"
   }
 }
@@ -69,23 +92,13 @@ resource "newrelic_alert_channel" "email" {
 # Link the channel to the policy
 resource "newrelic_alert_policy_channel" "alert_email" {
   policy_id  = newrelic_alert_policy.alert.id
-  channel_id = newrelic_alert_channel.email.id
+  channel_ids = [
+    newrelic_alert_channel.email.id
+  ]
 }
 ```
 
-## Argument Reference
-
-The following arguments are supported:
-
-- `api_key` - (Required) Your New Relic Personal API key. The `NEW_RELIC_API_KEY` environment variable can also be used.
-- `admin_api_key` - (Required for many resources) Your New Relic Admin API key. The `NEW_RELIC_ADMIN_API_KEY` environment variable can also be used.
-- `region` - (Required) The region for the data center for which your New Relic account is configured. The New Relic region can also be set via the environment variable `NEW_RELIC_REGION`. Valid values are `US` or `EU`. Only one region per provider block can be configured. If you have accounts in both regions, you must instantiate two providers - one for `US` and one for `EU`. See [multiple region example](add-link-here).
-- `insecure_skip_verify` - (Optional) Trust self-signed SSL certificates. If omitted, the `NEW_RELIC_API_SKIP_VERIFY` environment variable is used.
-- `insights_insert_key` - (Optional) Your Insights insert key used when inserting Insights events via the `newrelic_insights_event` resource. Can also use `NEW_RELIC_INSIGHTS_INSERT_KEY` environment variable.
-- `insights_insert_url` - (Optional) This argument changes the Insights insert URL (default is https://insights-collector.newrelic.com/v1/accounts). If the New Relic account is in the EU, the Insights API URL must be set to https://insights-collector.eu.newrelic.com/v1. The `NEW_RELIC_INSIGHTS_INSERT_URL` environment variable can also be used.
-- `cacert_file` - (Optional) A path to a PEM-encoded certificate authority used to verify the remote agent's certificate. The `NEW_RELIC_API_CACERT` environment variable can also be used.
-
-## Support for 1.x
+## Support for v1.x
 
 While the sun rises on the `2.x` release, the sunset of the `1.x` approaches.
 We intend to support minor bug fixes through the end of 2020, but we don't plan
@@ -93,39 +106,34 @@ to merge any new features into `release/1.x` branch.  Please see the section
 below about upgrading the provider.  All new feature work and focus will be
 directed at the newer provider version.
 
--> <small>**Deprecation notice:** 2020-06-12<br> 
+-> <small>**Deprecation notice:** 2020-06-12<br>
 -> **End of support:** 2020-01-15</small>
 
-If you wish to pin your environment to a specific release, you can do so with a `required_providers` statement in your Terraform manifest.
+If you wish to pin your environment to a specific release, you can do so with a `required_providers` statement in your Terraform manifest. You can also pin the version within your `provider` block.
+
+Using the `provider` block:
 
 ```hcl
-required_providers {
-    newrelic = "~> 1.19.0"
+provider "newrelic" {
+  version = "~> 2.0.0"
 }
 ```
 
-See the [Terraform docs][provider_version_configugration] for more information on pinning versions.
+Using the `required_providers` block:
 
-## Upgrading to 2.x
+```hcl
+required_providers {
+  newrelic = "~> 2.0.0"
+}
+```
 
-Users of the provider before version `2.x` will need to make a few adjustments to their configuration before upgrading.
+See the [Terraform docs][provider_version_configuration] for more information on pinning versions.
+
+## Upgrading to v2.x
+
+Upgrading to v2 of the provider involves some changes to your provider configuration. Please view our [**migration guide**](guides/migration_guide_v2.html) for more information and assistance.
 
 Please see the [latest provider configuration docs](/docs/providers/newrelic/guides/provider_configuration.html) for the current recommended configuration settings.
-
-### Update the environment
-
--> <small>**Note:** All environment variables in use by the provider have been renamed.</small>
-
-Replace all instances of environment variables named `NEWRELIC_*` with `NEW_RELIC_*`.
-
-`NEW_RELIC_PERSONAL_API_KEY` has been replaced by `NEW_RELIC_API_KEY`.  Please note, `NEW_RELIC_API_KEY` is now a *Personal API Key*.  Set the `NEW_RELIC_ADMIN_API_KEY` variable using an *Admin API Key*.
-
-### Update the `provider` block configuration
-
-* Move any existing `api_key` configuration setting to `admin_api_key`.
-* Move any existing `personal_api_key` configuration setting to `api_key`.  A Personal API key is now the default.
-* An `account_id` configuration setting is now required.
-* The `insights_account_id` configuration setting has been removed.  The `account_id` configuration setting is now used instead.
 
 ## Resource endpoint authentication
 
@@ -175,4 +183,4 @@ New Relic has open-sourced this project. This project is provided AS-IS WITHOUT 
 
 _Please do not report issues with this software to New Relic Global Technical Support._
 
-[provider_version_configugration]: https://www.terraform.io/docs/configuration/providers.html#provider-versions
+[provider_version_configuration]: https://www.terraform.io/docs/configuration/providers.html#provider-versions
