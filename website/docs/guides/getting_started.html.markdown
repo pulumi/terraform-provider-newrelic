@@ -18,7 +18,7 @@ description: |-
 
 ## Configuring the Provider
 
-Please see the [latest provider configuration docs](/docs/providers/newrelic/guides/provider_configuration.html) to get started with configuring the provider.
+Please see the [latest provider configuration docs](provider_configuration.html) to get started with configuring the provider.
 
 ## Initialize Your Terraform Setup
 
@@ -38,13 +38,13 @@ Once you've successfully initialized your Terraform working directory, you'll wa
 # Configure the New Relic provider
 provider "newrelic" {
   account_id = <Your Account ID>
-  api_key = <Your Personal API Key>    # starts with 'NRAK'
-  admin_api_key = <Your Admin API Key> # starts with 'NRAA'
+  api_key = <Your Personal API Key>    # usually prefixed with 'NRAK'
+  admin_api_key = <Your Admin API Key> # usually prefixed with 'NRAA'
   region = "US"                        # Valid regions are US and EU
 }
 ```
 
-> <small>**Note:** You can also use [environment variables](guides/provider_configuration.html#configuration-via-environment-variables) to configure the provider, which can simplify your `provider` block.</small>
+> <small>**Note:** You can also use [environment variables](provider_configuration.html#configuration-via-environment-variables) to configure the provider, which can simplify your `provider` block.</small>
 
 Now let's try running the following command.
 

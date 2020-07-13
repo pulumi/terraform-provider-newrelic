@@ -12,7 +12,7 @@ Version 2.0 of the provider introduces some changes to the provider's configurat
 
 ### A Note About API Key Format
 
-Your New Relic [**Personal API Key**](nr-personal-api-key-url) is now considered the default and standard API key for the provider. Your New Relic [**Admin API Key**](nr-admin-api-key-url) is still required for some resources, so we recommend configuring both based on the updates mentioned in the sections below.
+Your New Relic [**Personal API Key**](https://docs.newrelic.com/docs/apis/get-started/intro-apis/types-new-relic-api-keys#personal-api-key) is now considered the default and standard API key for the provider. Your New Relic [**Admin API Key**](https://docs.newrelic.com/docs/apis/get-started/intro-apis/types-new-relic-api-keys#admin) is still required for some resources, so we recommend configuring both based on the updates mentioned in the sections below.
 
 -> <small>**Please note the following formatting for the provider's API keys.** <br>Your **Personal API Key** has a prefix of `NRAK-` <br>Your **Admin API Key** has a prefix of `NRAA-`</small>
 
@@ -92,7 +92,7 @@ If you have been using environment variables to configure the provider, you will
     }
     ```
 
-    -> <small>**Note:** Take note of where the `NRAK-***` and `NRAA-***` values switch. This is important. Your Personal API Key has the `NRAK-` prefix.</small>
+    -> <small>**Note:** Take note of where the `NRAK-***` and `NRAA-***` prefixes switch. This is important. Most Personal API Keys have the `NRAK-` prefix.</small>
 
 2. Add `account_id` to your `provider` block and set it to your New Relic account ID. Note that you can also use the environment variable `NEW_RELIC_ACCOUNT_ID`.
 
