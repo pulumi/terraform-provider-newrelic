@@ -1,3 +1,5 @@
+// +build integration
+
 package newrelic
 
 import (
@@ -319,7 +321,8 @@ resource "newrelic_infra_alert_condition" "foo" {
   type            = "infra_metric"
   event           = "StorageSample"
   select          = "diskFreePercent"
-  comparison      = "below"
+	comparison      = "below"
+	description     = "test description"
 
   critical {
 	  duration = 10
@@ -344,7 +347,8 @@ resource "newrelic_infra_alert_condition" "foo" {
   type            = "INFRA_METRIC"
   event           = "StorageSample"
   select          = "diskFreePercent"
-  comparison      = "BELOW"
+	comparison      = "BELOW"
+	description     = "test description"
 
   critical {
 	  duration = 10

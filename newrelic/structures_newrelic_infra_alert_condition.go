@@ -10,14 +10,15 @@ import (
 
 func expandInfraAlertCondition(d *schema.ResourceData) (*alerts.InfrastructureCondition, error) {
 	condition := alerts.InfrastructureCondition{
-		Name:       d.Get("name").(string),
-		Enabled:    d.Get("enabled").(bool),
-		PolicyID:   d.Get("policy_id").(int),
-		Event:      d.Get("event").(string),
-		Comparison: strings.ToLower(d.Get("comparison").(string)),
-		Select:     d.Get("select").(string),
-		Type:       strings.ToLower(d.Get("type").(string)),
-		Critical:   expandInfraAlertThreshold(d.Get("critical")),
+		Name:        d.Get("name").(string),
+		Enabled:     d.Get("enabled").(bool),
+		PolicyID:    d.Get("policy_id").(int),
+		Event:       d.Get("event").(string),
+		Comparison:  strings.ToLower(d.Get("comparison").(string)),
+		Select:      d.Get("select").(string),
+		Type:        strings.ToLower(d.Get("type").(string)),
+		Critical:    expandInfraAlertThreshold(d.Get("critical")),
+		Description: d.Get("description").(string),
 	}
 
 	if attr, ok := d.GetOk("runbook_url"); ok {
@@ -62,7 +63,8 @@ func expandInfraAlertThreshold(v interface{}) *alerts.InfrastructureConditionThr
 	}
 
 	if val, ok := rah["value"]; ok {
-		alertInfraThreshold.Value = val.(float64)
+		value := val.(float64)
+		alertInfraThreshold.Value = &value
 	}
 
 	if val, ok := rah["time_function"]; ok {
@@ -90,6 +92,7 @@ func flattenInfraAlertCondition(condition *alerts.InfrastructureCondition, d *sc
 	d.Set("type", strings.ToLower(condition.Type))
 	d.Set("created_at", condition.CreatedAt)
 	d.Set("updated_at", condition.UpdatedAt)
+	d.Set("description", condition.Description)
 
 	if condition.Where != "" {
 		d.Set("where", condition.Where)
@@ -123,7 +126,7 @@ func flattenInfraAlertCondition(condition *alerts.InfrastructureCondition, d *sc
 func flattenAlertThreshold(v *alerts.InfrastructureConditionThreshold) []interface{} {
 	alertInfraThreshold := map[string]interface{}{
 		"duration":      v.Duration,
-		"value":         v.Value,
+		"value":         *v.Value,
 		"time_function": strings.ToLower(v.Function),
 	}
 
@@ -168,7 +171,7 @@ func validateAttributesForType(c *alerts.InfrastructureCondition) error {
 		if c.Critical.Function != "" {
 			return fmt.Errorf("time_function is not supported by condition type %s", c.Type)
 		}
-		if c.Critical.Value != 0 {
+		if *c.Critical.Value >= 0.0 {
 			return fmt.Errorf("value is not supported by condition type %s", c.Type)
 		}
 	}
