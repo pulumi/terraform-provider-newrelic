@@ -49,7 +49,95 @@ resource "newrelic_nrql_alert_condition" "foo" {
   }
 }
 ```
-See additional [examples](#additional-examples).
+
+##### Type: `baseline`
+
+[Baseline NRQL alert conditions](https://docs.newrelic.com/docs/alerts/new-relic-alerts/defining-conditions/create-baseline-alert-conditions) are dynamic in nature and adjust to the behavior of your data. The example below demonstrates a baseline NRQL alert condition for alerting when transaction durations are above a specified threshold and dynamically adjusts based on data trends.
+
+```hcl
+resource "newrelic_alert_policy" "foo" {
+  name = "foo"
+}
+
+resource "newrelic_nrql_alert_condition" "foo" {
+  type                 = "baseline"
+  account_id           = <Your Account ID>
+  name                 = "foo"
+  policy_id            = newrelic_alert_policy.foo.id
+  description          = "Alert when transactions are taking too long"
+  enabled              = true
+  runbook_url          = "https://www.example.com"
+  violation_time_limit = "one_hour"
+
+  # baseline type only
+  baseline_direction = "upper_only"
+
+  nrql {
+    query             = "SELECT percentile(duration, 95) FROM Transaction WHERE appName = 'ExampleAppName'"
+    evaluation_offset = 3
+  }
+
+  critical {
+    operator              = "above"
+    threshold             = 5.5
+    threshold_duration    = 300
+    threshold_occurrences = "all"
+  }
+
+  warning {
+    operator              = "above"
+    threshold             = 3.5
+    threshold_duration    = 600
+    threshold_occurrences = "all"
+  }
+}
+```
+
+##### Type: `outlier`
+
+In software development and operations, it is common to have a group consisting of members you expect to behave approximately the same. [Outlier detection](https://docs.newrelic.com/docs/alerts/new-relic-alerts/defining-conditions/outlier-detection-nrql-alert) facilitates alerting when the behavior of one or more common members falls outside a specified range expectation.
+
+```hcl
+resource "newrelic_alert_policy" "foo" {
+  name = "foo"
+}
+
+resource "newrelic_nrql_alert_condition" "foo" {
+  type                 = "outlier"
+  account_id           = <Your Account ID>
+  name                 = "foo"
+  policy_id            = newrelic_alert_policy.foo.id
+  description          = "Alert when outlier conditions occur"
+  enabled              = true
+  runbook_url          = "https://www.example.com"
+  violation_time_limit = "one_hour"
+
+  # Outlier only
+  expected_groups = 2
+
+  # Outlier only
+	open_violation_on_group_overlap = true
+
+  nrql {
+    query             = "SELECT percentile(duration, 95) FROM Transaction WHERE appName = 'ExampleAppName' FACET host"
+    evaluation_offset = 3
+  }
+
+  critical {
+    operator              = "above"
+    threshold             = 0.002
+    threshold_duration    = 600
+    threshold_occurrences = "all"
+  }
+
+  warning {
+    operator              = "above"
+    threshold             = 0.0015
+    threshold_duration    = 600
+    threshold_occurrences = "all"
+  }
+}
+```
 
 ## Argument Reference
 
@@ -106,100 +194,6 @@ The `term` block the following arguments:
 In addition to all arguments above, the following attributes are exported:
 
 - `id` - The ID of the NRQL alert condition. This is a composite ID with the format `<policy_id>:<condition_id>` - e.g. `538291:6789035`.
-
-## Additional Examples
-
-
-##### Type: `baseline`
-
-[Baseline NRQL alert conditions](https://docs.newrelic.com/docs/alerts/new-relic-alerts/defining-conditions/create-baseline-alert-conditions) are dynamic in nature and adjust to the behavior of your data. The example below demonstrates a baseline NRQL alert condition for alerting when transaction durations are above a specified threshold and dynamically adjusts based on data trends.
-
-```hcl
-resource "newrelic_alert_policy" "foo" {
-  name = "foo"
-}
-
-resource "newrelic_nrql_alert_condition" "foo" {
-  type                 = "baseline"
-  account_id           = <Your Account ID>
-  name                 = "foo"
-  policy_id            = newrelic_alert_policy.foo.id
-  description          = "Alert when transactions are taking too long"
-  enabled              = true
-  runbook_url          = "https://www.example.com"
-  violation_time_limit = "one_hour"
-
-  # baseline type only
-  baseline_direction = "upper_only"
-
-  nrql {
-    query             = "SELECT percentile(duration, 95) FROM Transaction WHERE appName = 'ExampleAppName'"
-    evaluation_offset = 3
-  }
-
-  critical {
-    operator              = "above"
-    threshold             = 5.5
-    threshold_duration    = 300
-    threshold_occurrences = "all"
-  }
-
-  warning {
-    operator              = "above"
-    threshold             = 3.5
-    threshold_duration    = 600
-    threshold_occurrences = "all"
-  }
-}
-```
-
-<br>
-
-##### Type: `outlier`
-
-In software development and operations, it is common to have a group consisting of members you expect to behave approximately the same. [Outlier detection](https://docs.newrelic.com/docs/alerts/new-relic-alerts/defining-conditions/outlier-detection-nrql-alert) facilitates alerting when the behavior of one or more common members falls outside a specified range expectation.
-
-```hcl
-resource "newrelic_alert_policy" "foo" {
-  name = "foo"
-}
-
-resource "newrelic_nrql_alert_condition" "foo" {
-  type                 = "outlier"
-  account_id           = <Your Account ID>
-  name                 = "foo"
-  policy_id            = newrelic_alert_policy.foo.id
-  description          = "Alert when outlier conditions occur"
-  enabled              = true
-  runbook_url          = "https://www.example.com"
-  violation_time_limit = "one_hour"
-
-  # Outlier only
-  expected_groups = 2
-
-  # Outlier only
-	open_violation_on_group_overlap = true
-
-  nrql {
-    query             = "SELECT percentile(duration, 95) FROM Transaction WHERE appName = 'ExampleAppName' FACET host"
-    evaluation_offset = 3
-  }
-
-  critical {
-    operator              = "above"
-    threshold             = 0.002
-    threshold_duration    = 600
-    threshold_occurrences = "all"
-  }
-
-  warning {
-    operator              = "above"
-    threshold             = 0.0015
-    threshold_duration    = 600
-    threshold_occurrences = "all"
-  }
-}
-```
 
 ## Import
 

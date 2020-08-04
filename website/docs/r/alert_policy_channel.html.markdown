@@ -59,7 +59,7 @@ resource "newrelic_alert_policy_channel" "foo" {
 The following arguments are supported:
 
 - `policy_id` - (Required) The ID of the policy.
-- `channel_ids` - (Required) Array of channel IDs to apply to the specified policy. We recommended sorting channel IDs in ascending order to avoid drift your Terraform state.
+- `channel_ids` - (Required) Array of channel IDs to apply to the specified policy. We recommended sorting channel IDs in ascending order to avoid drift in your state.
 
 ## Import
 

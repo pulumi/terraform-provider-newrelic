@@ -26,7 +26,48 @@ resource "newrelic_synthetics_monitor" "foo" {
   verify_ssl                = true                                # Optional for type "SIMPLE" and "BROWSER"
 }
 ```
-See additional [examples](#additional-examples).
+
+##### Type: `BROWSER`
+
+```hcl
+resource "newrelic_synthetics_monitor" "foo" {
+  name = "foo"
+  type = "BROWSER"
+  frequency = 5
+  status = "ENABLED"
+  locations = ["AWS_US_EAST_1"]
+
+  uri                       = "https://example.com"               # required for type "SIMPLE" and "BROWSER"
+  validation_string         = "add example validation check here" # optional for type "SIMPLE" and "BROWSER"
+  verify_ssl                = true                                # optional for type "SIMPLE" and "BROWSER"
+  bypass_head_request       = true                                # Note: optional for type "BROWSER" only
+  treat_redirect_as_failure = true                                # Note: optional for type "BROWSER" only
+}
+```
+
+##### Type: `SCRIPT_BROWSER`
+
+```hcl
+resource "newrelic_synthetics_monitor" "foo" {
+  name = "foo"
+  type = "SCRIPT_BROWSER"
+  frequency = 5
+  status = "ENABLED"
+  locations = ["AWS_US_EAST_1"]
+}
+```
+
+##### Type: `SCRIPT_API`
+
+```hcl
+resource "newrelic_synthetics_monitor" "foo" {
+  name = "foo"
+  type = "SCRIPT_API"
+  frequency = 5
+  status = "ENABLED"
+  locations = ["AWS_US_EAST_1"]
+}
+```
 
 ## Argument Reference
 
@@ -58,50 +99,6 @@ The `BROWSER` monitor type supports the following additional arguments:
 The following attributes are exported:
 
   * `id` - The ID of the Synthetics monitor.
-
-## Additional Examples
-
-Type: `BROWSER`
-
-```hcl
-resource "newrelic_synthetics_monitor" "foo" {
-  name = "foo"
-  type = "BROWSER"
-  frequency = 5
-  status = "ENABLED"
-  locations = ["AWS_US_EAST_1"]
-
-  uri                       = "https://example.com"               # required for type "SIMPLE" and "BROWSER"
-  validation_string         = "add example validation check here" # optional for type "SIMPLE" and "BROWSER"
-  verify_ssl                = true                                # optional for type "SIMPLE" and "BROWSER"
-  bypass_head_request       = true                                # Note: optional for type "BROWSER" only
-  treat_redirect_as_failure = true                                # Note: optional for type "BROWSER" only
-}
-```
-
-Type: `SCRIPT_BROWSER`
-
-```hcl
-resource "newrelic_synthetics_monitor" "foo" {
-  name = "foo"
-  type = "SCRIPT_BROWSER"
-  frequency = 5
-  status = "ENABLED"
-  locations = ["AWS_US_EAST_1"]
-}
-```
-
-Type: `SCRIPT_API`
-
-```hcl
-resource "newrelic_synthetics_monitor" "foo" {
-  name = "foo"
-  type = "SCRIPT_API"
-  frequency = 5
-  status = "ENABLED"
-  locations = ["AWS_US_EAST_1"]
-}
-```
 
 ## Import
 

@@ -24,55 +24,6 @@ resource "newrelic_alert_channel" "foo" {
   }
 }
 ```
-See additional [examples](#additional-examples).
-
-## Argument Reference
-
-The following arguments are supported:
-
-  * `name` - (Required) The name of the channel.
-  * `type` - (Required) The type of channel.  One of: `email`, `slack`, `opsgenie`, `pagerduty`, `victorops`, or `webhook`.
-  * `config` - (Optional) A nested block that describes an alert channel configuration.  Only one config block is permitted per alert channel definition.  See [Nested config blocks](#nested-config-blocks) below for details.
-
-### Nested `config` blocks
-
-Each alert channel type supports a specific set of arguments for the `config` block:
-
-  * `email`
-    * `recipients` - (Required) Comma delimited list of email addresses.
-    * `include_json_attachment` - (Optional) `0` or `1`. Flag for whether or not to attach a JSON document containing information about the associated alert to the email that is sent to recipients.
-  * `webhook`
-    * `base_url` - (Required) The base URL of the webhook destination.
-    * `auth_password` - (Optional) Specifies an authentication password for use with a channel.  Supported by the `webhook` channel type.
-    * `auth_type` - (Optional) Specifies an authentication method for use with a channel.  Supported by the `webhook` channel type.  Only HTTP basic authentication is currently supported via the value `BASIC`.
-    * `auth_username` - (Optional) Specifies an authentication username for use with a channel.  Supported by the `webhook` channel type.
-    * `headers` - (Optional) A map of key/value pairs that represents extra HTTP headers to be sent along with the webhook payload.
-    * `headers_string` - (Optional) Use instead of `headers` if the desired payload is more complex than a list of key/value pairs (e.g. a set of headers that makes use of nested objects).  The value provided should be a valid JSON string with escaped double quotes. Conflicts with `headers`.
-    * `payload` - (Optional) A map of key/value pairs that represents the webhook payload.  Must provide `payload_type` if setting this argument.
-    * `payload_string` - (Optional) Use instead of `payload` if the desired payload is more complex than a list of key/value pairs (e.g. a payload that makes use of nested objects).  The value provided should be a valid JSON string with escaped double quotes. Conflicts with `payload`.
-    * `payload_type` - (Optional) Can either be `application/json` or `application/x-www-form-urlencoded`. The `payload_type` argument is _required_ if `payload` is set.
-  * `pagerduty`
-    * `service_key` - (Required) Specifies the service key for integrating with Pagerduty.
-  * `victorops`
-    * `key` - (Required) The key for integrating with VictorOps.
-    * `route_key` - (Required) The route key for integrating with VictorOps.
-  * `slack`
-    * `url` - (Required) Your organization's Slack URL.
-    * `channel` - (Optional) The Slack channel to send notifications to.
-  * `opsgenie`
-    * `api_key` - (Required) The API key for integrating with OpsGenie.
-    * `region` - (Required) The data center region to store your data.  Valid values are `US` and `EU`.  Default is `US`.
-    * `teams` - (Optional) A set of teams for targeting notifications. Multiple values are comma separated.
-    * `tags` - (Optional) A set of tags for targeting notifications. Multiple values are comma separated.
-    * `recipients` - (Optional) A set of recipients for targeting notifications.  Multiple values are comma separated.
-
-## Attributes Reference
-
-In addition to all arguments above, the following attributes are exported:
-
-  * `id` - The ID of the channel.
-
-## Additional Examples
 
 ##### Slack
 ```hcl
@@ -169,6 +120,52 @@ EOF
   }
 }
 ```
+
+## Argument Reference
+
+The following arguments are supported:
+
+  * `name` - (Required) The name of the channel.
+  * `type` - (Required) The type of channel.  One of: `email`, `slack`, `opsgenie`, `pagerduty`, `victorops`, or `webhook`.
+  * `config` - (Optional) A nested block that describes an alert channel configuration.  Only one config block is permitted per alert channel definition.  See [Nested config blocks](#nested-config-blocks) below for details.
+
+### Nested `config` blocks
+
+Each alert channel type supports a specific set of arguments for the `config` block:
+
+  * `email`
+    * `recipients` - (Required) Comma delimited list of email addresses.
+    * `include_json_attachment` - (Optional) `0` or `1`. Flag for whether or not to attach a JSON document containing information about the associated alert to the email that is sent to recipients.
+  * `webhook`
+    * `base_url` - (Required) The base URL of the webhook destination.
+    * `auth_password` - (Optional) Specifies an authentication password for use with a channel.  Supported by the `webhook` channel type.
+    * `auth_type` - (Optional) Specifies an authentication method for use with a channel.  Supported by the `webhook` channel type.  Only HTTP basic authentication is currently supported via the value `BASIC`.
+    * `auth_username` - (Optional) Specifies an authentication username for use with a channel.  Supported by the `webhook` channel type.
+    * `headers` - (Optional) A map of key/value pairs that represents extra HTTP headers to be sent along with the webhook payload.
+    * `headers_string` - (Optional) Use instead of `headers` if the desired payload is more complex than a list of key/value pairs (e.g. a set of headers that makes use of nested objects).  The value provided should be a valid JSON string with escaped double quotes. Conflicts with `headers`.
+    * `payload` - (Optional) A map of key/value pairs that represents the webhook payload.  Must provide `payload_type` if setting this argument.
+    * `payload_string` - (Optional) Use instead of `payload` if the desired payload is more complex than a list of key/value pairs (e.g. a payload that makes use of nested objects).  The value provided should be a valid JSON string with escaped double quotes. Conflicts with `payload`.
+    * `payload_type` - (Optional) Can either be `application/json` or `application/x-www-form-urlencoded`. The `payload_type` argument is _required_ if `payload` is set.
+  * `pagerduty`
+    * `service_key` - (Required) Specifies the service key for integrating with Pagerduty.
+  * `victorops`
+    * `key` - (Required) The key for integrating with VictorOps.
+    * `route_key` - (Required) The route key for integrating with VictorOps.
+  * `slack`
+    * `url` - (Required) Your organization's Slack URL.
+    * `channel` - (Optional) The Slack channel to send notifications to.
+  * `opsgenie`
+    * `api_key` - (Required) The API key for integrating with OpsGenie.
+    * `region` - (Required) The data center region to store your data.  Valid values are `US` and `EU`.  Default is `US`.
+    * `teams` - (Optional) A set of teams for targeting notifications. Multiple values are comma separated.
+    * `tags` - (Optional) A set of tags for targeting notifications. Multiple values are comma separated.
+    * `recipients` - (Optional) A set of recipients for targeting notifications.  Multiple values are comma separated.
+
+## Attributes Reference
+
+In addition to all arguments above, the following attributes are exported:
+
+  * `id` - The ID of the channel.
 
 ## Import
 
