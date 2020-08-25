@@ -125,8 +125,10 @@ func Provider() terraform.ResourceProvider {
 		ResourcesMap: map[string]*schema.Resource{
 			"newrelic_alert_channel":                            resourceNewRelicAlertChannel(),
 			"newrelic_alert_condition":                          resourceNewRelicAlertCondition(),
+			"newrelic_alert_muting_rule":                        resourceNewRelicAlertMutingRule(),
 			"newrelic_alert_policy":                             resourceNewRelicAlertPolicy(),
 			"newrelic_alert_policy_channel":                     resourceNewRelicAlertPolicyChannel(),
+			"newrelic_api_access_key":                           resourceNewRelicAPIAccessKey(),
 			"newrelic_application_settings":                     resourceNewRelicApplicationSettings(),
 			"newrelic_dashboard":                                resourceNewRelicDashboard(),
 			"newrelic_entity_tags":                              resourceNewRelicEntityTags(),
