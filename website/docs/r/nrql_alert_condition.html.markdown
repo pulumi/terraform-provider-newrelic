@@ -12,7 +12,7 @@ Use this resource to create and manage NRQL alert conditions in New Relic.
 
 ## Example Usage
 
-##### Type: `static` (default)
+### Type: `static` (default)
 ```hcl
 resource "newrelic_alert_policy" "foo" {
   name = "foo"
@@ -28,6 +28,12 @@ resource "newrelic_nrql_alert_condition" "foo" {
   enabled              = true
   value_function       = "single_value"
   violation_time_limit = "one_hour"
+  fill_option          = "static"
+  fill_value           = 1.0
+
+  expiration_duration            = 120
+  open_violation_on_expiration   = true
+  close_violations_on_expiration = true
 
   nrql {
     query             = "SELECT average(duration) FROM Transaction where appName = 'Your App'"
@@ -50,7 +56,7 @@ resource "newrelic_nrql_alert_condition" "foo" {
 }
 ```
 
-##### Type: `baseline`
+### Type: `baseline`
 
 [Baseline NRQL alert conditions](https://docs.newrelic.com/docs/alerts/new-relic-alerts/defining-conditions/create-baseline-alert-conditions) are dynamic in nature and adjust to the behavior of your data. The example below demonstrates a baseline NRQL alert condition for alerting when transaction durations are above a specified threshold and dynamically adjusts based on data trends.
 
@@ -93,7 +99,9 @@ resource "newrelic_nrql_alert_condition" "foo" {
 }
 ```
 
-##### Type: `outlier`
+<br>
+
+### Type: `outlier`
 
 In software development and operations, it is common to have a group consisting of members you expect to behave approximately the same. [Outlier detection](https://docs.newrelic.com/docs/alerts/new-relic-alerts/defining-conditions/outlier-detection-nrql-alert) facilitates alerting when the behavior of one or more common members falls outside a specified range expectation.
 
@@ -161,20 +169,17 @@ The following arguments are supported:
 - `ignore_overlap` - (Optional) **DEPRECATED:** Use `open_violation_on_group_overlap` instead, but use the inverse value of your boolean - e.g. if `ignore_overlap = false`, use `open_violation_on_group_overlap = true`. This argument sets whether to trigger a violation when groups overlap. If set to `true` overlapping groups will not trigger a violation. This argument is only applicable in `outlier` conditions.
 - `violation_time_limit` - (Optional, however one of `violation_time_limit`, or `violation_time_limit_seconds` is Required) Sets a time limit, in hours, that will automatically force-close a long-lasting violation after the time limit you select. Possible values are `ONE_HOUR`, `TWO_HOURS`, `FOUR_HOURS`, `EIGHT_HOURS`, `TWELVE_HOURS`, `TWENTY_FOUR_HOURS` (case insensitive).
 - `violation_time_limit_seconds` - (Optional, however one of `violation_time_limit`, or `violation_time_limit_seconds` is Required) **DEPRECATED:** Use `violation_time_limit` instead. Sets a time limit, in seconds, that will automatically force-close a long-lasting violation after the time limit you select. Possible values are `3600`, `7200`, `14400`, `28800`, `43200`, and `86400`.
-
-## NRQL
+- `fill_option` - (Optional) - Which strategy to use when filling gaps in the signal. Possible values are `none`, `last_value` or `static`. If `static`, the `fill_value` field will be used for filling gaps in the signal.
+- `fill_value` - (Optional, required when `fill_option` is `static`) This value will be used for filling gaps in the signal.
+- `expiration_duration` - (Optional) - The amount of time (in seconds) to wait before considering the signal expired.
+- `open_violation_on_expiration` - (Optional) - Whether to create a new violation to capture that the signal expired.
+- `close_violations_on_expiration` - (Optional) - Whether to close all open violations when the signal expires.
 
 The `nrql` block supports the following arguments:
 
 - `query` - (Required) The NRQL query to execute for the condition.
 - `evaluation_offset` - (Optional) Represented in minutes and must be within 1-20 minutes (inclusive). NRQL queries are evaluated in one-minute time windows. The start time depends on this value. It's recommended to set this to 3 minutes. An offset of less than 3 minutes will trigger violations sooner, but you may see more false positives and negatives due to data latency. With `evaluation_offset` set to 3 minutes, the NRQL time window applied to your query will be: `SINCE 3 minutes ago UNTIL 2 minutes ago`.
 - `since_value` - (Optional)  **DEPRECATED:** Use `evaluation_offset` instead. The value to be used in the `SINCE <X> minutes ago` clause for the NRQL query. Must be between 1-20 (inclusive).
-
-## Terms
-
-~> **NOTE:** The direct use of the `term` has been deprecated, and users should use `critical` and `warning` instead.  What follows now applies to the named priority attributes for `critical` and `warning`, but for those attributes the priority is not allowed.
-
-NRQL alert conditions support up to two terms. At least one `term` must have `priority` set to `critical` and the second optional `term` must have `priority` set to `warning`.
 
 The `term` block the following arguments:
 
@@ -194,6 +199,7 @@ The `term` block the following arguments:
 In addition to all arguments above, the following attributes are exported:
 
 - `id` - The ID of the NRQL alert condition. This is a composite ID with the format `<policy_id>:<condition_id>` - e.g. `538291:6789035`.
+
 
 ## Import
 
