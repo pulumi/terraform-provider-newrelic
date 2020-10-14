@@ -121,6 +121,8 @@ EOF
 }
 ```
 
+## Argument Reference
+
 The following arguments are supported:
 
   * `name` - (Required) The name of the channel.
