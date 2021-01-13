@@ -2,22 +2,13 @@
 # Makefile fragment for installing deps
 #
 
-GO           ?= go
+GO               ?= go
+VENDOR_CMD       ?= ${GO} mod tidy
 
 deps: tools deps-only
 
 deps-only:
 	@echo "=== $(PROJECT_NAME) === [ deps             ]: Installing package dependencies required by the project..."
-	@$(GO) mod tidy
-	@$(GO) mod download
+	@$(VENDOR_CMD)
 
-tools: check-version
-	@echo "=== $(PROJECT_NAME) === [ tools            ]: Installing tools required by the project..."
-	@$(GO) install $(GOTOOLS)
-
-tools-update: check-version
-	@echo "=== $(PROJECT_NAME) === [ tools-update     ]: Updating tools required by the project..."
-	@$(GO) get -u $(GOTOOLS)
-
-
-.PHONY: deps deps-only tools tools-update
+.PHONY: deps deps-only tools tools-update tools-outdated
