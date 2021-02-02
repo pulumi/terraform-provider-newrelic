@@ -8,10 +8,6 @@ description: |-
 
 # Resource: newrelic\_one\_dashboard
 
-**NOTE:** This feature is currently in **CLOSED BETA**, and will **NOT WORK** for most New Relic customers and is subject to **BREAKING CHANGES**.
-
-Use this resource to create and manage New Relic One dashboards.
-
 ## Example Usage: Create a New Relic One Dashboard
 
 ```hcl
@@ -28,7 +24,7 @@ resource "newrelic_one_dashboard" "exampledash" {
 
       nrql_query {
         account_id = <Your Account ID>
-        nrql       = "FROM Transaction SELECT rate(count(*), 1 minute)"
+        query       = "FROM Transaction SELECT rate(count(*), 1 minute)"
       }
     }
 
@@ -39,7 +35,7 @@ resource "newrelic_one_dashboard" "exampledash" {
 
       nrql_query {
         account_id = <Your Account ID>
-        nrql       = "FROM Transaction SELECT average(duration) FACET appName"
+        query       = "FROM Transaction SELECT average(duration) FACET appName"
       }
     }
 
