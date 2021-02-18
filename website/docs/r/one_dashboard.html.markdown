@@ -23,7 +23,6 @@ resource "newrelic_one_dashboard" "exampledash" {
       column = 1
 
       nrql_query {
-        account_id = <Your Account ID>
         query       = "FROM Transaction SELECT rate(count(*), 1 minute)"
       }
     }
@@ -34,7 +33,7 @@ resource "newrelic_one_dashboard" "exampledash" {
       column = 5
 
       nrql_query {
-        account_id = <Your Account ID>
+        account_id = <Another Account ID>
         query       = "FROM Transaction SELECT average(duration) FACET appName"
       }
 
@@ -83,6 +82,10 @@ The following arguments are supported:
   * `widget_area` - (Optional) A nested block that describes an Area widget.  See [Nested widget blocks](#nested-widget-blocks) below for details.
   * `widget_bar` - (Optional) A nested block that describes a Bar widget.  See [Nested widget blocks](#nested-widget-blocks) below for details.
   * `widget_billboard` - (Optional) A nested block that describes a Billboard widget.  See [Nested widget blocks](#nested-widget-blocks) below for details.
+  * `widget_bullet` - (Optional) A nested block that describes a Bullet widget.  See [Nested widget blocks](#nested-widget-blocks) below for details.
+  * `widget_funnel` - (Optional) A nested block that describes a Funnel widget.  See [Nested widget blocks](#nested-widget-blocks) below for details.
+  * `widget_heatmap` - (Optional) A nested block that describes a Heatmap widget.  See [Nested widget blocks](#nested-widget-blocks) below for details.
+  * `widget_histogram` - (Optional) A nested block that describes a Histogram widget.  See [Nested widget blocks](#nested-widget-blocks) below for details.
   * `widget_line` - (Optional) A nested block that describes a Line widget.  See [Nested widget blocks](#nested-widget-blocks) below for details.
   * `widget_markdown` - (Optional) A nested block that describes a Markdown widget.  See [Nested widget blocks](#nested-widget-blocks) below for details.
   * `widget_pie` - (Optional) A nested block that describes a Pie widget.  See [Nested widget blocks](#nested-widget-blocks) below for details.
@@ -105,17 +108,34 @@ All nested `widget` blocks support the following common arguments:
 
 Each widget type supports an additional set of arguments:
 
-  * `widget_bar`, `widget_line`, `widget_pie`
+  * `widget_area`
+    * `nrql_query` - (Required) A nested block that describes a NRQL Query. See [Nested nrql\_query blocks](#nested-nrql-query-blocks) below for details.
+  * `widget_bar`
     * `nrql_query` - (Required) A nested block that describes a NRQL Query. See [Nested nrql\_query blocks](#nested-nrql-query-blocks) below for details.
     * `linked_entity_guids`: (Optional) Related entity GUIDs. Currently only supports Dashboard entity GUIDs.
-  * `widget_table`
-    * `nrql_query` - (Required) A nested block that describes a NRQL Query. See [Nested nrql\_query blocks](#nested-nrql-query-blocks) below for details.
   * `widget_billboard`
     * `nrql_query` - (Required) A nested block that describes a NRQL Query. See [Nested nrql\_query blocks](#nested-nrql-query-blocks) below for details.
     * `critical` - (Optional) Threshold above which the displayed value will be styled with a red color.
     * `warning` - (Optional) Threshold above which the displayed value will be styled with a yellow color.
+  * `widget_bullet`
+    * `nrql_query` - (Required) A nested block that describes a NRQL Query. See [Nested nrql\_query blocks](#nested-nrql-query-blocks) below for details.
+    * `limit` - (Optional) Visualization limit for the widget.
+  * `widget_funnel`
+    * `nrql_query` - (Required) A nested block that describes a NRQL Query. See [Nested nrql\_query blocks](#nested-nrql-query-blocks) below for details.
+  * `widget_heatmap`
+    * `nrql_query` - (Required) A nested block that describes a NRQL Query. See [Nested nrql\_query blocks](#nested-nrql-query-blocks) below for details.
+  * `widget_histogram`
+    * `nrql_query` - (Required) A nested block that describes a NRQL Query. See [Nested nrql\_query blocks](#nested-nrql-query-blocks) below for details.
+  * `widget_line`
+    * `nrql_query` - (Required) A nested block that describes a NRQL Query. See [Nested nrql\_query blocks](#nested-nrql-query-blocks) below for details.
   * `widget_markdown`:
     * `text` - (Required) The markdown source to be rendered in the widget.
+  * `widget_pie`
+    * `nrql_query` - (Required) A nested block that describes a NRQL Query. See [Nested nrql\_query blocks](#nested-nrql-query-blocks) below for details.
+    * `linked_entity_guids`: (Optional) Related entity GUIDs. Currently only supports Dashboard entity GUIDs.
+  * `widget_table`
+    * `nrql_query` - (Required) A nested block that describes a NRQL Query. See [Nested nrql\_query blocks](#nested-nrql-query-blocks) below for details.
+    * `linked_entity_guids`: (Optional) Related entity GUIDs. Currently only supports Dashboard entity GUIDs.
 
 ### Nested `nrql_query` blocks
 
@@ -123,7 +143,7 @@ Nested `nrql_query` blocks allow you to make one or more NRQL queries within a w
 
 The following arguments are supported:
 
-  * `account_id` - (Required) The New Relic account ID to issue the query against.
+  * `account_id` - (Optional) The New Relic account ID to issue the query against. Defaults to the Account ID where the dashboard was created.
   * `query` - (Required) Valid NRQL query string. See [Writing NRQL Queries](https://docs.newrelic.com/docs/insights/nrql-new-relic-query-language/using-nrql/introduction-nrql) for help.
 
 ## Additional Examples
@@ -148,7 +168,6 @@ resource "newrelic_one_dashboard" "multi_page_dashboard" {
       column = 1
 
       nrql_query {
-        account_id = <Your Account ID>
         query      = "FROM Transaction SELECT count(*) FACET name"
       }
 
