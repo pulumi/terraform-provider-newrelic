@@ -1,3 +1,137 @@
+<a name="v2.19.0"></a>
+## [v2.19.0] - 2021-02-18
+### Bug Fixes
+- replacement for deadlink linter
+- cannot create resource "newrelic_infra_alert_condition" of type "infra_host_not_reporting"
+- replacement for deadlink linter
+- **alert_channel:** avoid config drift with sensitive values not returned by the API
+- **alert_channel:** avoid drift with config.auth_password
+- **alert_condition:** remove conditional to fix drift when using 'user_defined' attributes
+- **alert_muting_rule:** condition tag validation
+- **alert_muting_rule:** update test expectation to match input
+- **alert_policy:** avoid drift due to account_id inheritance in resource and data source
+- **alerts:** Unify how alert policy selects an account_id
+- **alerts:** flatten condition scope properly for APM JVM metrics
+- **alerts:** require at least one violation time limit attr
+- **alerts:** ensure threshold_occurrences case fold comparison
+- **alerts:** avoid bad index reference
+- **alerts:** improve nil handling for alert_channel
+- **build:** update version.ProviderVersion via ldflags during release process
+- **changelog:** ensure proper branch to base from
+- **changelog:** update changelog on release only, drop reviewer spec
+- **dashboard:** use state migration to fix 500 error when upgrading from v2.7.5 to v2.8 and beyond
+- **docs:** extra whitespace below table
+- **docs:** Alert Channels do not manage Policies
+- **docs:** better table header rendering
+- **entity:** add VIZ domain
+- **infra:** avoid nil pointer reference
+- **infra:** avoid nil pointer reference
+- **infra_alert_condition:** fix integration tests
+- **infra_alert_condition:** support zero-value thresholds for infra_alert_condition resource
+- **newrelic_alert_condition:** allow instance scope for JVM app metrics
+- **newrelic_entity:** include additional ID attr for browser apps
+- **nrql_alert_condition:** fix fill_option DiffSuppressFunc
+- **nrql_alert_condition:** avoid drift due to account_id inheritance in NRQL alert condition
+- **nrql_alert_condition:** fix drift with threshold_occurrences - store lowercase in terraform state
+- **nrql_alert_condition:** avoid drift using computed value
+- **nrql_alert_condition:** reverse attribute detection for migration
+- **nrql_alert_condition:** add missing zeros to violation_time_limit_seconds to the new:old map
+- **nrql_alert_condition:** validate operator based on condition type
+- **nrql_alert_condition:** use better term operator
+- **nrql_alert_condition:** Fixed an issue with extrapolation (gap filling) settings
+- **nrql_alert_condition:** update validation for nrql conditions
+- **one_dashboard:** Table Widget should have filter on them
+- **one_dashboard:** Inherit nrql_query account_id from dashboard by default
+
+### Documentation Updates
+- update infra alert condition api key type
+- update changelog
+- communicate that most but not all keys have prefixes
+- fix broken links in api_access_key.html.markdown
+- fix broken links
+- fix broken links
+- fix broken links
+- update changelog
+- change personal API key to user api key
+- update API key instructions for getting started guide
+- update getting started guide with a link to EU graphiql
+- fix broken links
+- include note about API key access
+- update process running example
+- update changelog
+- update changelog
+- add instructions for New Relic One users to get an api key
+- replace uses of APM conditions with NRQL conditions
+- add website documentation for nrql_alert aggregation_window
+- remove admin key from documentation
+- remove admin API key from docs and various other updates
+- update authentication table
+- fix references to newrelic_entity data sources
+- update changelog
+- update changelog
+- update changelog
+- update changelog
+- update changelog
+- update development instructions for new TF version
+- DEPRECATION notice for newrelic_alert_condition
+- update supported Go information and test config
+- change slack integration documentation
+- update changelog
+- **README:** update provider configuration pin version examples
+- **alert_channel:** add note to import section regarding handling of sensitive data
+- **alert_condition:** document apm_jvm_metric
+- **alert_muting_rule:** Added docs for alert muting rule.
+- **alert_policy:** update alert_policy import section, add  default to arg ref
+- **alert_policy_channel:** update example reference
+- **alerts:** update documentation for newrelic_nrql_alert_condition
+- **alerts:** include account_id attribute for alert_policy
+- **dashboard:** Improve docs for limit and order_by widget attributes
+- **dashboard:** update docs regarding cross-account widget config drift
+- **dashboard:** add cross-account example
+- **dashboard:** fix some broken links
+- **dashboard:** update docs with info regarding widget.account_id and cross-account widgets
+- **newrelic_synthetics_monitor_script:** Use file method instead of template_file data source
+- **nrql_alert_condition:** Amends threshold_duration constraints for NRQL alert conditions
+- **nrql_alert_condition:** include notes about upgrading from 1.x
+- **nrql_condition:** add clarity around choosing between new and old/deprecated attributes
+- **nrql_condition:** clarify when value_function attr is 'required' vs 'not required'
+- **one_dashboard:** Add overview doc for one_dashboard resource
+- **one_dashboard:** remove unused entity reference in example
+- **one_dashboard:** add linked_entity_guids to newrelic_one_dashboard resource docs
+- **provider:** additional v2 updates, migration guide updates
+- **provider:** update getting started example to reflect v2 updates
+- **provider:** add environment variables and schema attribute table
+- **provider:** add getting started guide to the quick links
+- **provider:** fix incorrect newrelic_application reference in some examples
+- **provider:** add account_id to argument reference, move argument reference above the fold
+- **readme:** update title, add link to latest documentation
+- **synthetics:** remove newrelic_synthetics_label resource
+- **synthetics_monitor_location:** Adding docs for Synthetics monitor location data source.
+
+### Features
+- add a newrelic_account data source
+- **aggregation_window:** add support for nrql signal aggregationWindow
+- **alert_muting_rule:** Creating alert muting rule resource.
+- **alert_muting_rule:** add schedule support
+- **alerts:** allow a 30 day violation limit for nrql conditions
+- **alerts:** deprecate plugins conditions and un-deprecate APM alert conditions
+- **alerts:** new newrelic_alerts_location_failure_condition resource
+- **client:** update newrelic-client-go (retry on nerdgraph timeouts)
+- **dashboard:** enable Personal API Key auth for dashboards and some sythentics resources
+- **dashboard:** support cross-account widgets :)
+- **infra_alert_condition:** add description attribute
+- **newrelic_api_access_key:** Implement new resource: newrelic_api_access_key
+- **nrql_alert_condition:** Added support for expiration (loss of signal) and extrapolation (gap filling) settings
+- **nrql_alert_condition:** swap deprecation of violation_time_limit fields
+- **one_dashboard:** Add support for widget_funnel
+- **one_dashboard:** Add widget_heatmap
+- **one_dashboard:** add linked entities to widget schema
+- **one_dashboard:** Add support for widget_bullet
+- **one_dashboard:** Testing out one_dashboard resource
+- **one_dashboard:** Add support for widget_histogram
+- **synthetics:** replace REST API calls with Nerdgraph calls
+- **synthetics_monitor_location:** Add data source newrelic_synthetics_monitor_location.
+
 <a name="v2.1.1"></a>
 ## [v2.1.1] - 2020-06-23
 ### Features
@@ -263,7 +397,8 @@
 ## [v0.1.1] - 2017-08-02
 <a name="v0.1.0"></a>
 ## v0.1.0 - 2017-06-21
-[Unreleased]: https://github.com/newrelic/terraform-provider-newrelic/compare/v2.1.1...HEAD
+[Unreleased]: https://github.com/newrelic/terraform-provider-newrelic/compare/v2.19.0...HEAD
+[v2.19.0]: https://github.com/newrelic/terraform-provider-newrelic/compare/v2.1.1...v2.19.0
 [v2.1.1]: https://github.com/newrelic/terraform-provider-newrelic/compare/v2.1.0...v2.1.1
 [v2.1.0]: https://github.com/newrelic/terraform-provider-newrelic/compare/v2.0.0...v2.1.0
 [v2.0.0]: https://github.com/newrelic/terraform-provider-newrelic/compare/v1.19.0...v2.0.0
