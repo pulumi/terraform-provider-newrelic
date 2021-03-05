@@ -12,7 +12,7 @@ Use this resource to create and manage NRQL alert conditions in New Relic.
 
 ## Example Usage
 
-##### Type: `static` (default)
+### Type: `static` (default)
 ```hcl
 resource "newrelic_alert_policy" "foo" {
   name = "foo"
@@ -50,7 +50,7 @@ resource "newrelic_nrql_alert_condition" "foo" {
 }
 ```
 
-##### Type: `baseline`
+### Type: `baseline`
 
 [Baseline NRQL alert conditions](https://docs.newrelic.com/docs/alerts/new-relic-alerts/defining-conditions/create-baseline-alert-conditions) are dynamic in nature and adjust to the behavior of your data. The example below demonstrates a baseline NRQL alert condition for alerting when transaction durations are above a specified threshold and dynamically adjusts based on data trends.
 
@@ -95,7 +95,7 @@ resource "newrelic_nrql_alert_condition" "foo" {
 
 <br>
 
-##### Type: `outlier`
+### Type: `outlier`
 
 In software development and operations, it is common to have a group consisting of members you expect to behave approximately the same. [Outlier detection](https://docs.newrelic.com/docs/alerts/new-relic-alerts/defining-conditions/outlier-detection-nrql-alert) facilitates alerting when the behavior of one or more common members falls outside a specified range expectation.
 
@@ -157,20 +157,33 @@ The following arguments are supported:
 - `term` - (Optional) **DEPRECATED** Use `critical`, and `warning` instead.  A list of terms for this condition. See [Terms](#terms) below for details.
 - `critical` - (Required) A list containing the `critical` threshold values. See [Terms](#terms) below for details.
 - `warning` - (Optional) A list containing the `warning` threshold values. See [Terms](#terms) below for details.
-- `value_function` - (Optional) Possible values are `single_value`, `sum` (case insensitive). Defaults to `single_value`.
+- `value_function` - (Required if `type` is `static`, optional when `type` is `baseline` or `outlier` ) Possible values are `single_value`, `sum` (case insensitive).
 - `expected_groups` - (Optional) Number of expected groups when using `outlier` detection.
 - `open_violation_on_group_overlap` - (Optional) Whether or not to trigger a violation when groups overlap. Set to `true` if you want to trigger a violation when groups overlap. This argument is only applicable in `outlier` conditions.
 - `ignore_overlap` - (Optional) **DEPRECATED:** Use `open_violation_on_group_overlap` instead, but use the inverse value of your boolean - e.g. if `ignore_overlap = false`, use `open_violation_on_group_overlap = true`. This argument sets whether to trigger a violation when groups overlap. If set to `true` overlapping groups will not trigger a violation. This argument is only applicable in `outlier` conditions.
-- `violation_time_limit` - (Optional, however one of `violation_time_limit`, or `violation_time_limit_seconds` is Required) Sets a time limit, in hours, that will automatically force-close a long-lasting violation after the time limit you select. Possible values are `ONE_HOUR`, `TWO_HOURS`, `FOUR_HOURS`, `EIGHT_HOURS`, `TWELVE_HOURS`, `TWENTY_FOUR_HOURS` (case insensitive).
-- `violation_time_limit_seconds` - (Optional, however one of `violation_time_limit`, or `violation_time_limit_seconds` is Required) **DEPRECATED:** Use `violation_time_limit` instead. Sets a time limit, in seconds, that will automatically force-close a long-lasting violation after the time limit you select. Possible values are `3600`, `7200`, `14400`, `28800`, `43200`, and `86400`.
+- `violation_time_limit` - (Optional) **DEPRECATED:** Use `violation_time_limit_seconds` instead. Sets a time limit, in hours, that will automatically force-close a long-lasting violation after the time limit you select. Possible values are `ONE_HOUR`, `TWO_HOURS`, `FOUR_HOURS`, `EIGHT_HOURS`, `TWELVE_HOURS`, `TWENTY_FOUR_HOURS`, `THIRTY_DAYS` (case insensitive).<br>
+<small>\***Note**: One of `violation_time_limit` _or_ `violation_time_limit_seconds` must be set, but not both.</small>
+
+- `violation_time_limit_seconds` - (Optional) Sets a time limit, in seconds, that will automatically force-close a long-lasting violation after the time limit you select. The value must be between 300 seconds (5 minutes) to 2592000 seconds (30 days) (inclusive). <br>
+<small>\***Note**: One of `violation_time_limit` _or_ `violation_time_limit_seconds` must be set, but not both.</small>
+
+- `fill_option` - (Optional) Which strategy to use when filling gaps in the signal. Possible values are `none`, `last_value` or `static`. If `static`, the `fill_value` field will be used for filling gaps in the signal.
+- `fill_value` - (Optional, required when `fill_option` is `static`) This value will be used for filling gaps in the signal.
+- `aggregation_window` - (Optional) The duration of the time window used to evaluate the NRQL query, in seconds. The value must be at least 30 seconds, and no more than 15 minutes (900 seconds). Default is 60 seconds.
+- `expiration_duration` - (Optional) The amount of time (in seconds) to wait before considering the signal expired.
+- `open_violation_on_expiration` - (Optional) Whether to create a new violation to capture that the signal expired.
+- `close_violations_on_expiration` - (Optional) Whether to close all open violations when the signal expires.
 
 ## NRQL
 
 The `nrql` block supports the following arguments:
 
 - `query` - (Required) The NRQL query to execute for the condition.
-- `evaluation_offset` - (Optional) Represented in minutes and must be within 1-20 minutes (inclusive). NRQL queries are evaluated in one-minute time windows. The start time depends on this value. It's recommended to set this to 3 minutes. An offset of less than 3 minutes will trigger violations sooner, but you may see more false positives and negatives due to data latency. With `evaluation_offset` set to 3 minutes, the NRQL time window applied to your query will be: `SINCE 3 minutes ago UNTIL 2 minutes ago`.
-- `since_value` - (Optional)  **DEPRECATED:** Use `evaluation_offset` instead. The value to be used in the `SINCE <X> minutes ago` clause for the NRQL query. Must be between 1-20 (inclusive).
+- `evaluation_offset` - (Optional*) Represented in minutes and must be within 1-20 minutes (inclusive). NRQL queries are evaluated in one-minute time windows. The start time depends on this value. It's recommended to set this to 3 minutes. An offset of less than 3 minutes will trigger violations sooner, but you may see more false positives and negatives due to data latency. With `evaluation_offset` set to 3 minutes, the NRQL time window applied to your query will be: `SINCE 3 minutes ago UNTIL 2 minutes ago`.<br>
+<small>\***Note**: One of `evaluation_offset` _or_ `since_value` must be set, but not both.</small>
+
+- `since_value` - (Optional*)  **DEPRECATED:** Use `evaluation_offset` instead. The value to be used in the `SINCE <X> minutes ago` clause for the NRQL query. Must be between 1-20 (inclusive). <br>
+<small>\***Note**: One of `evaluation_offset` _or_ `since_value` must be set, but not both.</small>
 
 ## Terms
 
@@ -180,13 +193,13 @@ NRQL alert conditions support up to two terms. At least one `term` must have `pr
 
 The `term` block the following arguments:
 
-- `duration` - (Required) In minutes, must be in the range of `1` to `120`, inclusive.
-- `operator` - (Optional) `above`, `below`, or `equal`. Defaults to `equal`. Note that when using a `type` of `outlier`, the only valid option here is `above`.
+- `operator` - (Optional) Valid values are `above`, `below`, or `equals` (case insensitive). Defaults to `equals`. Note that when using a `type` of `outlier`, the only valid option here is `above`.
 - `priority` - (Optional) `critical` or `warning`. Defaults to `critical`.
 - `threshold` - (Required) The value which will trigger a violation. Must be `0` or greater.
-- `threshold_duration` - (Optional) The duration of time, in seconds, that the threshold must violate for in order to create a violation. Value must be a multiple of 60.
-<br>For _baseline_ NRQL alert conditions, the value must be within 120-3600 seconds (inclusive).
-<br>For _static_ NRQL alert conditions, the value must be within 120-7200 seconds (inclusive).
+- `threshold_duration` - (Optional) The duration, in seconds, that the threshold must violate in order to create a violation. Value must be a multiple of the `aggregation_window` (which has a default of 60 seconds).
+<br>For _baseline_ and _outlier_ NRQL alert conditions, the value must be within 120-3600 seconds (inclusive).
+<br>For _static_ NRQL alert conditions with the `sum` value function, the value must be within 120-7200 seconds (inclusive).
+<br>For _static_ NRQL alert conditions with the `single_value` value function, the value must be within 60-7200 seconds (inclusive).
 
 - `threshold_occurrences` - (Optional) The criteria for how many data points must be in violation for the specified threshold duration. Valid values are: `all` or `at_least_once` (case insensitive).
 - `duration` - (Optional) **DEPRECATED:** Use `threshold_duration` instead. The duration of time, in _minutes_, that the threshold must violate for in order to create a violation. Must be within 1-120 (inclusive).

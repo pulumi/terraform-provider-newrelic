@@ -12,7 +12,7 @@ Use this resource to create and manage New Relic alert channels.
 
 ## Example Usage
 
-##### Email
+### Email
 ```hcl
 resource "newrelic_alert_channel" "foo" {
   name = "foo"
@@ -20,12 +20,12 @@ resource "newrelic_alert_channel" "foo" {
 
   config {
     recipients              = "foo@example.com"
-    include_json_attachment = "1"
+    include_json_attachment = "true"
   }
 }
 ```
 
-##### Slack
+### Slack
 ```hcl
 resource "newrelic_alert_channel" "foo" {
   name = "slack-example"
@@ -38,7 +38,7 @@ resource "newrelic_alert_channel" "foo" {
 }
 ```
 
-##### OpsGenie
+### OpsGenie
 ```hcl
 resource "newrelic_alert_channel" "foo" {
   name = "opsgenie-example"
@@ -53,7 +53,7 @@ resource "newrelic_alert_channel" "foo" {
 }
 ```
 
-##### PagerDuty
+### PagerDuty
 ```hcl
 resource "newrelic_alert_channel" "foo" {
   name = "pagerduty-example"
@@ -65,7 +65,7 @@ resource "newrelic_alert_channel" "foo" {
 }
 ```
 
-##### VictorOps
+### VictorOps
 ```hcl
 resource "newrelic_alert_channel" "foo" {
   name = "victorops-example"
@@ -78,7 +78,7 @@ resource "newrelic_alert_channel" "foo" {
 }
 ```
 
-##### Webhook
+### Webhook
 ```hcl
 resource "newrelic_alert_channel" "foo" {
   name = "webhook-example"
@@ -100,7 +100,7 @@ resource "newrelic_alert_channel" "foo" {
 }
 ```
 
-##### Webhook with complex payload
+### Webhook with complex payload
 ```hcl
 resource "newrelic_alert_channel" "foo" {
   name = "webhook-example"
@@ -126,7 +126,7 @@ EOF
 The following arguments are supported:
 
   * `name` - (Required) The name of the channel.
-  * `type` - (Required) The type of channel.  Accepted values are 'email', 'slack', 'opsgenie', 'pagerduty', 'victorops', or 'webhook'.
+  * `type` - (Required) The type of channel.  One of: `email`, `slack`, `opsgenie`, `pagerduty`, `victorops`, or `webhook`.
   * `config` - (Optional) A nested block that describes an alert channel configuration.  Only one config block is permitted per alert channel definition.  See [Nested config blocks](#nested-config-blocks) below for details.
 
 ### Nested `config` blocks
@@ -135,7 +135,7 @@ Each alert channel type supports a specific set of arguments for the `config` bl
 
   * `email`
     * `recipients` - (Required) Comma delimited list of email addresses.
-    * `include_json_attachment` - (Optional) `0` or `1`. Flag for whether or not to attach a JSON document containing information about the associated alert to the email that is sent to recipients.
+    * `include_json_attachment` - (Optional) `true` or `false`. Flag for whether or not to attach a JSON document containing information about the associated alert to the email that is sent to recipients.
   * `webhook`
     * `base_url` - (Required) The base URL of the webhook destination.
     * `auth_password` - (Optional) Specifies an authentication password for use with a channel.  Supported by the `webhook` channel type.
